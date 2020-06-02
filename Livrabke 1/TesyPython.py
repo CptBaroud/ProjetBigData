@@ -11,7 +11,13 @@ if db['vehicules_stamped'].count() <= 0:
         m = trafic['num_periode'] % 60
         j = trafic['num_jour'] + 1
 
-        db['vehicules_stamped'].insert_one({'num_arete': trafic['num_arete'], 'date': datetime.datetime(2020, 1, j, h, m).strftime("%d/%m/%Y %Hh%Mm"),
-                                                        'nb_vehicules': trafic['nb_vehicules']})
+        if trafic['plage_horaire'] == 'm':
+            db['vehicules_stamped'].insert_one({'num_arete': trafic['num_arete'],
+                                                'date': datetime.datetime(2020, 1, j, 7+h, m).strftime("%d/%m/%Y %Hh%Mm"),
+                                                'nb_vehicules': trafic['nb_vehicules']})
+        else:
+            db['vehicules_stamped'].insert_one({'num_arete': trafic['num_arete'],
+                                                'date': datetime.datetime(2020, 1, j, 17+h, m).strftime("%d/%m/%Y %Hh%Mm"),
+                                                'nb_vehicules': trafic['nb_vehicules']})
 else:
     print('La base est déjà remplie')
