@@ -3,21 +3,15 @@ import datetime
 
 client = MongoClient('localhost', 27017)
 db = client['DataProject']
-collection_traffic = db['vehicules']
+collection_stamped = db['vehicules_stamped']
 
-if db['vehicules_stamped'].count() <= 0:
-    for trafic in collection_traffic.find():
-        h = round(trafic['num_periode'] / 60)
-        m = trafic['num_periode'] % 60
-        j = trafic['num_jour'] + 1
+date = list()
+heure = list()
 
-        if trafic['plage_horaire'] == 'm':
-            db['vehicules_stamped'].insert_one({'num_arete': trafic['num_arete'],
-                                                'date': datetime.datetime(2020, 1, j, 7+h, m).strftime("%d/%m/%Y %Hh%Mm"),
-                                                'nb_vehicules': trafic['nb_vehicules']})
-        else:
-            db['vehicules_stamped'].insert_one({'num_arete': trafic['num_arete'],
-                                                'date': datetime.datetime(2020, 1, j, 17+h, m).strftime("%d/%m/%Y %Hh%Mm"),
-                                                'nb_vehicules': trafic['nb_vehicules']})
-else:
-    print('La base est déjà remplie')
+for date in collection_stamped.find({}, {'date': 1}):
+    temp = datetime.datetime.strptime(date['date'], "%d/%m/%Y %Hh%Mm")
+    date.append(temp.date())
+    heure.append(temp.time())
+
+print(date)
+print(heure)
